@@ -65,6 +65,33 @@ module Berkshelf
     end
   end
 
+  class SubversionError < BerkshelfError
+    status_code(104)
+
+    # @param [#to_s] stderr
+    #   the error that came from stderr
+    def initialize(stderr)
+      @stderr = stderr.to_s
+    end
+
+    # A common header for all git errors. The #to_s method should
+    # use this before outputting any specific errors.
+    #
+    # @return [String]
+    def header
+      'An error occurred during Subversion execution:'
+    end
+
+    def to_s
+      [
+        header,
+        "",
+        "  " + @stderr.to_s.split("\n").map(&:strip).join("\n  "),
+        ""
+      ].join("\n")
+    end
+  end
+
   class AmbiguousGitRef < GitError
     def initialize(ref)
       @ref = ref
@@ -119,7 +146,7 @@ module Berkshelf
   end
 
   class InvalidHgURI < BerkshelfError
-    status_code(110)
+    status_code(109)
 
     # @param [String] uri
     def initialize(uri)
@@ -145,7 +172,7 @@ module Berkshelf
   end
 
   class InvalidGitHubIdentifier < BerkshelfError
-    status_code(110)
+    status_code(111)
 
     # @param [String] repo_identifier
     def initialize(repo_identifier)
@@ -157,8 +184,21 @@ module Berkshelf
     end
   end
 
+  class InvalidSubversionURI < BerkshelfError
+    status_code(112)
+
+    # @param [String] uri
+    def initialize(uri)
+      @uri = uri
+    end
+
+    def to_s
+      "'#{@uri}' is not a valid Subversion URI"
+    end
+  end
+
   class UnknownGitHubProtocol < BerkshelfError
-    status_code(110)
+    status_code(113)
 
     # @param [String] protocol
     def initialize(protocol)
@@ -171,7 +211,7 @@ module Berkshelf
   end
 
   class MercurialNotFound < BerkshelfError
-    status_code(111)
+    status_code(114)
 
     def to_s
       'Could not find a Mercurial executable in your path - please add it and try again'
@@ -179,16 +219,24 @@ module Berkshelf
   end
 
   class GitNotFound < BerkshelfError
-    status_code(110)
+    status_code(115)
 
     def to_s
       'Could not find a Git executable in your path - please add it and try again'
     end
   end
 
-  class ConstraintNotSatisfied < BerkshelfError; status_code(111); end
+  class SubversionNotFound < BerkshelfError
+    status_code(116)
+
+    def to_s
+      'Could not find a Subversion executable in your path - please add it and try again'
+    end
+  end
+
+  class ConstraintNotSatisfied < BerkshelfError; status_code(117); end
   class BerksfileReadError < BerkshelfError
-    status_code(113)
+    status_code(118)
 
     # @param [#status_code] original_error
     def initialize(original_error)
@@ -199,7 +247,7 @@ module Berkshelf
 
 
     def status_code
-      @original_error.respond_to?(:status_code) ? @original_error.status_code : 113
+      @original_error.respond_to?(:status_code) ? @original_error.status_code : 118
     end
 
     alias_method :original_backtrace, :backtrace
@@ -217,7 +265,7 @@ module Berkshelf
   end
 
   class MismatchedCookbookName < BerkshelfError
-    status_code(114)
+    status_code(119)
 
     # @param [Berkshelf::Dependency] dependency
     #   the dependency with the expected name
@@ -244,7 +292,7 @@ module Berkshelf
   end
 
   class InvalidConfiguration < BerkshelfError
-    status_code(115)
+    status_code(120)
 
     def initialize(errors)
       @errors = errors
@@ -258,12 +306,12 @@ module Berkshelf
     end
   end
 
-  class ConfigExists < BerkshelfError; status_code(116); end
-  class ConfigurationError < BerkshelfError; status_code(117); end
-  class InsufficientPrivledges < BerkshelfError; status_code(119); end
+  class ConfigExists < BerkshelfError; status_code(121); end
+  class ConfigurationError < BerkshelfError; status_code(122); end
+  class InsufficientPrivledges < BerkshelfError; status_code(123); end
 
   class DependencyNotFound < BerkshelfError
-    status_code(120)
+    status_code(124)
 
     # @param [String, Array<String>] cookbooks
     #   the list of cookbooks that were not defined
@@ -278,12 +326,12 @@ module Berkshelf
     end
   end
 
-  class ValidationFailed < BerkshelfError; status_code(121); end
-  class InvalidVersionConstraint < BerkshelfError; status_code(122); end
-  class CommunitySiteError < BerkshelfError; status_code(123); end
+  class ValidationFailed < BerkshelfError; status_code(125); end
+  class InvalidVersionConstraint < BerkshelfError; status_code(126); end
+  class CommunitySiteError < BerkshelfError; status_code(127); end
 
   class CookbookValidationFailure < BerkshelfError
-    status_code(124)
+    status_code(128)
 
     # @param [Berkshelf::Location] location
     #   the location (or any subclass) raising this validation error
@@ -299,12 +347,12 @@ module Berkshelf
     end
   end
 
-  class ClientKeyFileNotFound < BerkshelfError; status_code(125); end
+  class ClientKeyFileNotFound < BerkshelfError; status_code(129); end
 
   class UploadFailure < BerkshelfError; end
 
   class FrozenCookbook < UploadFailure
-    status_code(126)
+    status_code(130)
 
     # @param [CachedCookbook] cookbook
     def initialize(cookbook)
@@ -319,7 +367,7 @@ module Berkshelf
   end
 
   class OutdatedDependency < BerkshelfError
-    status_code(128)
+    status_code(131)
 
     # @param [Berkshelf::Dependency] locked_dependency
     #   the locked dependency
@@ -342,7 +390,7 @@ module Berkshelf
   end
 
   class EnvironmentNotFound < BerkshelfError
-    status_code(129)
+    status_code(132)
 
     def initialize(environment_name)
       @environment_name = environment_name
@@ -354,7 +402,7 @@ module Berkshelf
   end
 
   class ChefConnectionError < BerkshelfError
-    status_code(130)
+    status_code(133)
 
     def to_s
       'There was an error connecting to the Chef Server'
@@ -362,7 +410,7 @@ module Berkshelf
   end
 
   class UnknownCompressionType < BerkshelfError
-    status_code(131)
+    status_code(134)
 
     def initialize(destination)
       @destination = destination
@@ -381,7 +429,7 @@ module Berkshelf
   # @param [Array<#to_s>] files
   #   the list of files that were not valid
   class InvalidCookbookFiles < BerkshelfError
-    status_code(132)
+    status_code(135)
 
     def initialize(cookbook, files)
       @cookbook = cookbook
@@ -405,7 +453,7 @@ module Berkshelf
   # @param [Berkshelf::CachedCookbook] cookbook
   #   the cookbook that failed license validation
   class LicenseNotAllowed < BerkshelfError
-    status_code(133)
+    status_code(136)
 
     def initialize(cookbook)
       @cookbook = cookbook
@@ -419,7 +467,7 @@ module Berkshelf
   end
 
   class LicenseNotFound < BerkshelfError
-    status_code(134)
+    status_code(137)
 
     attr_reader :license
 
@@ -436,7 +484,7 @@ module Berkshelf
   # Raised when a cookbook or its recipes contain a space or invalid
   # character in the path.
   class ConfigNotFound < BerkshelfError
-    status_code(135)
+    status_code(138)
 
     # @param [String] type
     #   the type of config that was not found (Berkshelf, Chef, etc)
@@ -453,7 +501,7 @@ module Berkshelf
   end
 
   class LockfileParserError < BerkshelfError
-    status_code(136)
+    status_code(139)
 
     # @param [String] lockfile
     #   the path to the Lockfile
@@ -470,7 +518,7 @@ module Berkshelf
   end
 
   class InvalidSourceURI < BerkshelfError
-    status_code(137)
+    status_code(140)
 
     attr_reader :reason
 
@@ -485,12 +533,12 @@ module Berkshelf
     end
   end
 
-  class DuplicateDemand < BerkshelfError; status_code(138); end
-  class VendorError < BerkshelfError; status_code(139); end
-  class LockfileNotFound < BerkshelfError; status_code(140); end
+  class DuplicateDemand < BerkshelfError; status_code(141); end
+  class VendorError < BerkshelfError; status_code(142); end
+  class LockfileNotFound < BerkshelfError; status_code(143); end
 
   class NotACookbook < BerkshelfError
-    status_code(141)
+    status_code(144)
 
     # @param [String] path
     #   the path to the thing that is not a cookbook
@@ -503,6 +551,6 @@ module Berkshelf
     end
   end
 
-  class InvalidLockFile < BerkshelfError; status_code(142); end
-  class PackageError < BerkshelfError; status_code(143); end
+  class InvalidLockFile < BerkshelfError; status_code(145); end
+  class PackageError < BerkshelfError; status_code(146); end
 end

@@ -1,6 +1,8 @@
 # 3.0.0
 
-* New "universe" resolver which communicates with an API server to resolve constraint graphs faster and more reliably
+* Major overhaul of dependency resolution strategy. New "universe" resolver which communicates with an API server to resolve constraint graphs faster and more accurately. See: [Berkshelf API](https://github.com/RiotGames/berkshelf-api)
+* Logging improvements for git locations (thanks cjerdonek)
+* Performance improvements
 
 # 2.0.10
 

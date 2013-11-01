@@ -9,13 +9,6 @@ Manage a Cookbook or an Application's Cookbook dependencies
 
 Installation
 ------------
-Add Berkshelf to your repository's `Gemfile`:
-
-```ruby
-gem 'berkshelf'
-```
-
-Or run it as a standalone:
 
     gem install berkshelf
 
@@ -27,9 +20,9 @@ Supported Platforms
 -------------------
 Berkshelf is tested on Ruby 1.9.3, 2.0.0, and JRuby 1.6+.
 
-Ruby 1.9 mode is required on all interpreters.
+Ruby 1.9 mode is required for JRuby.
 
-Ruby 1.9.1 and 1.9.2 are not officially supported. If you encounter problems, please upgrade to Ruby 2.0 or 1.9.3.
+Ruby 1.9.1 and 1.9.2 are not supported. If you encounter problems, please upgrade to Ruby 2.0 or 1.9.3.
 
 Bash Completion
 ---------------

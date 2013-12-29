@@ -344,7 +344,7 @@ Feature: berks install
       """
       'somethingabsurd' is not supported for the 'github' location key - please use 'git' instead
       """
-    And the exit status should be "InvalidGitURI"
+    And the exit status should be "UnknownGitHubProtocol"
 
 
   Scenario: running install when current project is a cookbook and the 'metadata' is specified

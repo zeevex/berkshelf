@@ -1,6 +1,5 @@
 module Berkshelf
   class SubversionLocation < Location::ScmLocation
-
     set_location_key :svn
     set_valid_options :rev
 
@@ -8,8 +7,7 @@ module Berkshelf
     attr_accessor :rev
     attr_reader :options
 
-    # @param [Dependency] dependency
-    # @param [Hash] options
+    # @param [Berkshelf::Dependency] dependency
     #
     # @option options [String] :svn
     #   the Subversion URL to checkout
@@ -17,8 +15,8 @@ module Berkshelf
     #   the revision to checkout
     def initialize(dependency, options = {})
       super
-      @uri    = options[:svn]
-      @rev    = options[:rev] || 'HEAD'
+      @uri = options[:svn]
+      @rev = options[:rev] || 'HEAD'
 
       Subversion.validate_uri!(@uri)
     end

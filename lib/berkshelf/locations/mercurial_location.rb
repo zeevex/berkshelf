@@ -1,6 +1,5 @@
 module Berkshelf
   class MercurialLocation < Location::ScmLocation
-
     set_location_key :hg
     set_valid_options :rev, :branch, :tag, :rel
 

@@ -1,6 +1,5 @@
 module Berkshelf
   class GitLocation < Location::ScmLocation
-
     set_location_key :git
     set_valid_options :ref, :branch, :tag, :rel
 
